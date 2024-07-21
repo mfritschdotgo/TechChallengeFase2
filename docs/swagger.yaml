@@ -1,0 +1,750 @@
+basePath: /
+definitions:
+  dto.CreateCategoryRequest:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  dto.CreateClientRequest:
+    properties:
+      cpf:
+        type: string
+      mail:
+        type: string
+      name:
+        type: string
+    type: object
+  dto.CreateOrderRequest:
+    properties:
+      client:
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/dto.ProductItem'
+        type: array
+    type: object
+  dto.CreateProductRequest:
+    properties:
+      category_id:
+        type: string
+      description:
+        type: string
+      image:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+  dto.PaymentDTO:
+    properties:
+      id:
+        type: string
+      status:
+        type: integer
+    type: object
+  dto.ProductItem:
+    properties:
+      id:
+        type: string
+      quantity:
+        type: integer
+    type: object
+  entities.Category:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entities.Client:
+    properties:
+      cpf:
+        type: string
+      created_at:
+        type: string
+      mail:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entities.Order:
+    properties:
+      client:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/entities.OrderItem'
+        type: array
+      order:
+        type: integer
+      status:
+        type: integer
+      status_description:
+        type: string
+      total:
+        type: number
+      updated_at:
+        type: string
+    type: object
+  entities.OrderItem:
+    properties:
+      price:
+        type: number
+      product_id:
+        type: string
+      product_name:
+        type: string
+      quantity:
+        type: integer
+    type: object
+  entities.OrderStatus:
+    properties:
+      status:
+        type: integer
+      status_description:
+        type: string
+    type: object
+  entities.Product:
+    properties:
+      category_id:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      updated_at:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: APIs for using the management system and sales orders
+  title: Skina Lanches Management API
+  version: "1.0"
+paths:
+  /categories:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a paginated list of categories
+      parameters:
+      - default: 1
+        description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of categories per page
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved list of categories
+          schema:
+            items:
+              $ref: '#/definitions/entities.Category'
+            type: array
+        "500":
+          description: Internal server error if there is a problem on the server side
+      summary: List categories
+      tags:
+      - categories
+    post:
+      consumes:
+      - application/json
+      description: Adds a new category to the database with the given details.
+      parameters:
+      - description: Category creation details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created Category
+          schema:
+            $ref: '#/definitions/entities.Category'
+        "400":
+          description: Bad request if the Category data is invalid
+        "500":
+          description: Internal server error if there is a problem on the server side
+      summary: Add a new category
+      tags:
+      - categories
+  /categories/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a category based on its unique ID and returns a success
+        message.
+      parameters:
+      - description: category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Message indicating successful deletion
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad request if the ID is not provided or is invalid
+        "404":
+          description: category not found if the ID does not match any category
+        "500":
+          description: Internal server error if there is a problem deleting the category
+      summary: Delete a category
+      tags:
+      - categories
+    get:
+      consumes:
+      - application/json
+      description: Retrieves details of a category based on its unique ID.
+      parameters:
+      - description: category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the category details
+          schema:
+            $ref: '#/definitions/entities.Category'
+        "400":
+          description: Bad request if the ID is not provided or invalid
+        "404":
+          description: Product not found if the ID does not match any category
+      summary: Get a category
+      tags:
+      - categories
+    patch:
+      consumes:
+      - application/json
+      description: Update category details in the database by ID.
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Category object that needs to be updated
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category successfully updated
+          schema:
+            $ref: '#/definitions/entities.Category'
+        "400":
+          description: Invalid input, Object is invalid
+          schema:
+            type: string
+        "404":
+          description: Category not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Update an existing category
+      tags:
+      - categories
+    put:
+      consumes:
+      - application/json
+      description: Replace category details in the database by ID.
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Category object that needs to be updated
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category successfully updated
+          schema:
+            $ref: '#/definitions/entities.Category'
+        "400":
+          description: Invalid input, Object is invalid
+          schema:
+            type: string
+        "404":
+          description: Category not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Replace an existing category
+      tags:
+      - categories
+  /clients:
+    post:
+      consumes:
+      - application/json
+      description: Adds a new client to the database with the given details.
+      parameters:
+      - description: Client creation details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateClientRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Client successfully created
+          schema:
+            $ref: '#/definitions/entities.Client'
+        "400":
+          description: Bad request if the Client data is invalid
+        "500":
+          description: Internal server error if there is a problem on the server side
+      summary: Add a new client
+      tags:
+      - clients
+  /clients/{cpf}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves details of a client based on its unique CPF.
+      parameters:
+      - description: client CPF
+        in: path
+        name: cpf
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the client details
+          schema:
+            $ref: '#/definitions/entities.Client'
+        "400":
+          description: Bad request if the CPF is not provided or invalid
+        "404":
+          description: Client not found if the CPF does not match any Client
+      summary: Get a client
+      tags:
+      - clients
+  /fakeCheckout/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Simulates a checkout, changing status to 4 - finished
+      parameters:
+      - description: order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully fake checkout
+          schema:
+            $ref: '#/definitions/entities.Order'
+        "400":
+          description: Bad request if the ID is not provided or invalid
+        "500":
+          description: Internal server error if there is a problem on the server side
+      summary: Simulates a checkout
+      tags:
+      - fakeCheckout
+  /orders:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a paginated list of orders
+      parameters:
+      - default: 1
+        description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of orders per page
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved list of orders
+          schema:
+            items:
+              $ref: '#/definitions/entities.Order'
+            type: array
+        "500":
+          description: Internal server error if there is a problem on the server side
+      summary: List orders
+      tags:
+      - orders
+    post:
+      consumes:
+      - application/json
+      description: Adds a new order to the database with the given details.
+      parameters:
+      - description: Order creation details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created Order
+          schema:
+            $ref: '#/definitions/entities.Order'
+        "400":
+          description: Bad request if the Order data is invalid
+        "500":
+          description: Internal server error if there is a problem on the server side
+      summary: Add a new order
+      tags:
+      - orders
+  /orders/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves details of a order based on its unique ID.
+      parameters:
+      - description: order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the order details
+          schema:
+            $ref: '#/definitions/entities.Order'
+        "400":
+          description: Bad request if the ID is not provided or invalid
+        "404":
+          description: Product not found if the ID does not match any order
+      summary: Get a order
+      tags:
+      - orders
+  /orders/{id}/{status}:
+    patch:
+      consumes:
+      - application/json
+      description: Update order status, statuses 1 to 4 allowed
+      parameters:
+      - description: order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: order ID
+        in: path
+        name: status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully status updated
+          schema:
+            $ref: '#/definitions/entities.OrderStatus'
+        "400":
+          description: Bad request if the Status is not provided or invalid
+        "500":
+          description: Internal server error if there is a problem on the server side
+      summary: Update order status
+      tags:
+      - orders
+  /payment:
+    post:
+      consumes:
+      - application/json
+      description: Update payment status for the order based ID.
+      parameters:
+      - description: New payment status for the order
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PaymentDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully update payment status for the order
+        "400":
+          description: Bad request if the ID is not provided or invalid
+        "500":
+          description: Internal server error if there is a problem on the server side
+      summary: Update payment status for the order.
+      tags:
+      - payment
+  /payment/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Generates the qr code for payment via pix
+      parameters:
+      - description: order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Got qr code successfully
+        "400":
+          description: Bad request if the ID is not provided or invalid
+        "500":
+          description: Internal server error if there is a problem on the server side
+      summary: Generates the qr code for payment via pix
+      tags:
+      - payment
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a paginated list of products optionally filtered by category.
+      parameters:
+      - description: Filter products by category
+        in: query
+        name: category
+        type: string
+      - default: 1
+        description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of products per page
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved list of products
+          schema:
+            items:
+              $ref: '#/definitions/entities.Product'
+            type: array
+        "500":
+          description: Internal server error if there is a problem on the server side
+      summary: List products
+      tags:
+      - products
+    post:
+      consumes:
+      - application/json
+      description: Adds a new product to the database with the given details.
+      parameters:
+      - description: Product creation details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateProductRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Product successfully created
+          schema:
+            $ref: '#/definitions/entities.Product'
+        "400":
+          description: Bad request if the product data is invalid
+        "500":
+          description: Internal server error if there is a problem on the server side
+      summary: Add a new product
+      tags:
+      - products
+  /products/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a product based on its unique ID and returns a success
+        message.
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Message indicating successful deletion
+        "400":
+          description: Bad request if the ID is not provided or is invalid
+        "404":
+          description: Product not found if the ID does not match any product
+        "500":
+          description: Internal server error if there is a problem deleting the product
+      summary: Delete a product
+      tags:
+      - products
+    get:
+      consumes:
+      - application/json
+      description: Retrieves details of a product based on its unique ID.
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the product details
+          schema:
+            $ref: '#/definitions/entities.Product'
+        "400":
+          description: Bad request if the ID is not provided or invalid
+        "404":
+          description: Product not found if the ID does not match any product
+      summary: Get a product
+      tags:
+      - products
+    patch:
+      consumes:
+      - application/json
+      description: Replace product details in the database by ID.
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Product object that needs to be replaced
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateProductRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product successfully updated
+          schema:
+            $ref: '#/definitions/entities.Product'
+        "400":
+          description: Invalid input, Object is invalid
+          schema:
+            type: string
+        "404":
+          description: Product not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Replace an existing product
+      tags:
+      - products
+    put:
+      consumes:
+      - application/json
+      description: Update product details in the database by ID.
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Product object that needs to be updated
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateProductRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product successfully updated
+          schema:
+            $ref: '#/definitions/entities.Product'
+        "400":
+          description: Invalid input, Object is invalid
+          schema:
+            type: string
+        "404":
+          description: Product not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Update an existing product
+      tags:
+      - products
+swagger: "2.0"

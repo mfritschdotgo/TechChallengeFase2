@@ -1,0 +1,1097 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "APIs for using the management system and sales orders",
+        "title": "Skina Lanches Management API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "basePath": "/",
+    "paths": {
+        "/clients": {
+            "post": {
+                "description": "Adds a new client to the database with the given details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "clients"
+                ],
+                "summary": "Add a new client",
+                "parameters": [
+                    {
+                        "description": "Client creation details",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateClientRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Client successfully created",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Client"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request if the Client data is invalid"
+                    },
+                    "500": {
+                        "description": "Internal server error if there is a problem on the server side"
+                    }
+                }
+            }
+        },
+        "/clients/{cpf}": {
+            "get": {
+                "description": "Retrieves details of a client based on its unique CPF.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "clients"
+                ],
+                "summary": "Get a client",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "client CPF",
+                        "name": "cpf",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved the client details",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Client"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request if the CPF is not provided or invalid"
+                    },
+                    "404": {
+                        "description": "Client not found if the CPF does not match any Client"
+                    }
+                }
+            }
+        },
+        "/categories": {
+            "get": {
+                "description": "Retrieves a paginated list of categories",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "List categories",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number for pagination",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Number of categories per page",
+                        "name": "pageSize",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved list of categories",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entities.Category"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error if there is a problem on the server side"
+                    }
+                }
+            },
+            "post": {
+                "description": "Adds a new category to the database with the given details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "Add a new category",
+                "parameters": [
+                    {
+                        "description": "Category creation details",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateCategoryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successfully created Category",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Category"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request if the Category data is invalid"
+                    },
+                    "500": {
+                        "description": "Internal server error if there is a problem on the server side"
+                    }
+                }
+            }
+        },
+        "/categories/{id}": {
+            "get": {
+                "description": "Retrieves details of a category based on its unique ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "Get a category",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "category ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved the category details",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Category"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request if the ID is not provided or invalid"
+                    },
+                    "404": {
+                        "description": "Product not found if the ID does not match any category"
+                    }
+                }
+            },
+            "put": {
+                "description": "Replace category details in the database by ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "Replace an existing category",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Category object that needs to be updated",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateCategoryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Category successfully updated",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Category"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input, Object is invalid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Category not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deletes a category based on its unique ID and returns a success message.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "Delete a category",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "category ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Message indicating successful deletion",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request if the ID is not provided or is invalid"
+                    },
+                    "404": {
+                        "description": "category not found if the ID does not match any category"
+                    },
+                    "500": {
+                        "description": "Internal server error if there is a problem deleting the category"
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update category details in the database by ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "Update an existing category",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Category object that needs to be updated",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateCategoryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Category successfully updated",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Category"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input, Object is invalid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Category not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/products": {
+            "get": {
+                "description": "Retrieves a paginated list of products optionally filtered by category.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "List products",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter products by category",
+                        "name": "category",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number for pagination",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Number of products per page",
+                        "name": "pageSize",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved list of products",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entities.Product"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error if there is a problem on the server side"
+                    }
+                }
+            },
+            "post": {
+                "description": "Adds a new product to the database with the given details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Add a new product",
+                "parameters": [
+                    {
+                        "description": "Product creation details",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateProductRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Product successfully created",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Product"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request if the product data is invalid"
+                    },
+                    "500": {
+                        "description": "Internal server error if there is a problem on the server side"
+                    }
+                }
+            }
+        },
+        "/products/{id}": {
+            "get": {
+                "description": "Retrieves details of a product based on its unique ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Get a product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved the product details",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Product"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request if the ID is not provided or invalid"
+                    },
+                    "404": {
+                        "description": "Product not found if the ID does not match any product"
+                    }
+                }
+            },
+            "put": {
+                "description": "Update product details in the database by ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Update an existing product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Product object that needs to be updated",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateProductRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product successfully updated",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Product"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input, Object is invalid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deletes a product based on its unique ID and returns a success message.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Delete a product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Message indicating successful deletion"
+                    },
+                    "400": {
+                        "description": "Bad request if the ID is not provided or is invalid"
+                    },
+                    "404": {
+                        "description": "Product not found if the ID does not match any product"
+                    },
+                    "500": {
+                        "description": "Internal server error if there is a problem deleting the product"
+                    }
+                }
+            },
+            "patch": {
+                "description": "Replace product details in the database by ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Replace an existing product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Product object that needs to be replaced",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateProductRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product successfully updated",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Product"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input, Object is invalid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },        
+        "/orders": {
+            "get": {
+                "description": "Retrieves a paginated list of orders",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "List orders",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number for pagination",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Number of orders per page",
+                        "name": "pageSize",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved list of orders",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entities.Order"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error if there is a problem on the server side"
+                    }
+                }
+            },
+            "post": {
+                "description": "Adds a new order to the database with the given details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Add a new order",
+                "parameters": [
+                    {
+                        "description": "Order creation details",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateOrderRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successfully created Order",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Order"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request if the Order data is invalid"
+                    },
+                    "500": {
+                        "description": "Internal server error if there is a problem on the server side"
+                    }
+                }
+            }
+        },
+        "/orders/{id}": {
+            "get": {
+                "description": "Retrieves details of a order based on its unique ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Get a order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "order ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved the order details",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Order"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request if the ID is not provided or invalid"
+                    },
+                    "404": {
+                        "description": "Product not found if the ID does not match any order"
+                    }
+                }
+            }
+        },
+        "/orders/{id}/{status}": {
+            "patch": {
+                "description": "Update order status, statuses 1 to 4 allowed",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Update order status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "order ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "order ID",
+                        "name": "status",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully status updated",
+                        "schema": {
+                            "$ref": "#/definitions/entities.OrderStatus"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request if the Status is not provided or invalid"
+                    },
+                    "500": {
+                        "description": "Internal server error if there is a problem on the server side"
+                    }
+                }
+            }
+        },
+        "/payment": {
+            "post": {
+                "description": "Update payment status for the order based ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payment"
+                ],
+                "summary": "Update payment status for the order.",
+                "parameters": [
+                    {
+                        "description": "New payment status for the order",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PaymentDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully update payment status for the order"
+                    },
+                    "400": {
+                        "description": "Bad request if the ID is not provided or invalid"
+                    },
+                    "500": {
+                        "description": "Internal server error if there is a problem on the server side"
+                    }
+                }
+            }
+        },
+        "/payment/{id}": {
+            "get": {
+                "description": "Generates the qr code for payment via pix",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payment"
+                ],
+                "summary": "Generates the qr code for payment via pix",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "order ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Got qr code successfully"
+                    },
+                    "400": {
+                        "description": "Bad request if the ID is not provided or invalid"
+                    },
+                    "500": {
+                        "description": "Internal server error if there is a problem on the server side"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.CreateCategoryRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreateClientRequest": {
+            "type": "object",
+            "properties": {
+                "cpf": {
+                    "type": "string"
+                },
+                "mail": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreateOrderRequest": {
+            "type": "object",
+            "properties": {
+                "client": {
+                    "type": "string"
+                },
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ProductItem"
+                    }
+                }
+            }
+        },
+        "dto.CreateProductRequest": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                }
+            }
+        },
+        "dto.PaymentDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.ProductItem": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entities.Category": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.Client": {
+            "type": "object",
+            "properties": {
+                "cpf": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "mail": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.Order": {
+            "type": "object",
+            "properties": {
+                "client": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.OrderItem"
+                    }
+                },
+                "order": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "status_description": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "number"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.OrderItem": {
+            "type": "object",
+            "properties": {
+                "price": {
+                    "type": "number"
+                },
+                "product_id": {
+                    "type": "string"
+                },
+                "product_name": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entities.OrderStatus": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "integer"
+                },
+                "status_description": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.Product": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

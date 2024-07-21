@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skinaapis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: skinaapis
+  template:
+    metadata:
+      labels:
+        app: skinaapis
+    spec:
+      containers:
+        - name: skinaapis
+          image: mrcsfritsch/skinaapis:latest
+          ports:
+            - containerPort: 9090
+          env:
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: MONGO_INITDB_ROOT_USERNAME
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: MONGO_INITDB_ROOT_PASSWORD
+            - name: MONGO_PORT
+              value: "27017"
+            - name: MONGO_HOST
+              value: "mongodb-service"
+            - name: MONGO_DATABASE
+              value: "skinaapis_db"
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+          livenessProbe:
+            httpGet:
+              path: /docs/
+              port: 9090
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /docs/
+              port: 9090
+            initialDelaySeconds: 5
+            periodSeconds: 10
