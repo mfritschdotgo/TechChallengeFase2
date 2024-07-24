@@ -267,7 +267,7 @@ Obs.: Through swagger for more details about the APIs
     - `404`: Product not found if the ID does not match any product.
     - `500`: Internal server error if there is a problem deleting the product.# techchallenge
       
-### payment
+### Payment
 
 - **GET /payment/{id}**
   - Generates the qr code for payment via pix.
