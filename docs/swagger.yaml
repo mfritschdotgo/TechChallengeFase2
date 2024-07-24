@@ -1,4 +1,3 @@
-basePath: /
 definitions:
   dto.CreateCategoryRequest:
     properties:
@@ -140,9 +139,6 @@ definitions:
     type: object
 info:
   contact: {}
-  description: APIs for using the management system and sales orders
-  title: Skina Lanches Management API
-  version: "1.0"
 paths:
   /categories:
     get:
