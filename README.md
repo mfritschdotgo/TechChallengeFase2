@@ -20,7 +20,7 @@ The image for this project is also available on docker hub: https://hub.docker.c
     - [Clients](#clients)
     - [Orders](#orders)
     - [Products](#products)
-    - [FakeCheckout](#fakeCheckout)
+    - [peyment](#payment)
   - [Kubernetes Structure Description](#kubernetes-structure-description)
     - [MongoDB](#mongodb)
     - [Skinaapis](#Skinaapis)
@@ -267,15 +267,22 @@ Obs.: Through swagger for more details about the APIs
     - `404`: Product not found if the ID does not match any product.
     - `500`: Internal server error if there is a problem deleting the product.# techchallenge
       
-### fakeCheckout
+### payment
 
-- **POST /fakeCheckout/{id}**
-  - Adds a new client to the database.
+- **GET /payment/{id}**
+  - Generates the qr code for payment via pix.
   - Parameters:
-    - `id` (string): Product ID.
-  - Body: `dto.CreateClientRequest`
+    - `id` (string): Order ID.
   - Responses:
-    - `200`: Successfully fake checkout.
+    - `200`: Got qr code successfully.
+    - `400`: Bad request if the ID is not provided or invalid.
+    - `500`: Internal server error if there is a problem on the server side.
+
+- **POST /payment**
+  - Update payment status for the order based ID.
+  - Body: `dto.paymentDTO`
+  - Responses:
+    - `200`: Got qr code successfully.
     - `400`: Bad request if the ID is not provided or invalid.
     - `500`: Internal server error if there is a problem on the server side.
 
