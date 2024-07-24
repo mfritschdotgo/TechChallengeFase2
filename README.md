@@ -147,65 +147,6 @@ Obs.: Through swagger for more details about the APIs
     - `400`: Bad request if the ID is not provided or is invalid.
     - `404`: Category not found if the ID does not match any category.
     - `500`: Internal server error if there is a problem deleting the category.
-
-### Clients
-
-- **POST /clients**
-  - Adds a new client to the database.
-  - Body: `dto.CreateClientRequest`
-  - Responses:
-    - `201`: Client successfully created.
-    - `400`: Bad request if the client data is invalid.
-    - `500`: Internal server error if there is a problem on the server side.
-
-- **GET /clients/{cpf}**
-  - Retrieves details of a client by its CPF.
-  - Parameters:
-    - `cpf` (string): Client CPF.
-  - Responses:
-    - `200`: Successfully retrieved the client details.
-    - `400`: Bad request if the CPF is not provided or invalid.
-    - `404`: Client not found if the CPF does not match any client.
-    - `500`: Internal server error if there is a problem on the server side.
-
-### Orders
-
-- **GET /orders**
-  - Retrieves a paginated list of orders.
-  - Parameters:
-    - `page` (integer, default: 1): Page number for pagination.
-    - `pageSize` (integer, default: 10): Number of orders per page.
-  - Responses:
-    - `200`: Successfully retrieved list of orders.
-    - `500`: Internal server error if there is a problem on the server side.
-
-- **POST /orders**
-  - Adds a new order to the database.
-  - Body: `dto.CreateOrderRequest`
-  - Responses:
-    - `201`: Successfully created order.
-    - `400`: Bad request if the order data is invalid.
-    - `500`: Internal server error if there is a problem on the server side.
-
-- **GET /orders/{id}**
-  - Retrieves details of an order by its ID.
-  - Parameters:
-    - `id` (string): Order ID.
-  - Responses:
-    - `200`: Successfully retrieved the order details.
-    - `400`: Bad request if the ID is not provided or invalid.
-    - `404`: Order not found if the ID does not match any order.
-    - `500`: Internal server error if there is a problem on the server side.
-- **PATCH /orders/{id}/{status}**
-  - Update the status of an order 
-  - Parameters:
-    - `id` (string): Order ID.
-    - `status` (string): status.
-  - Responses:
-    - `200`: Successfully status updated.
-    - `400`: Bad request if the Status is not provided or invalid
-    - `500`: Internal server error if there is a problem on the server side.
-
 ### Products
 
 - **GET /products**
@@ -265,7 +206,65 @@ Obs.: Through swagger for more details about the APIs
     - `200`: Message indicating successful deletion.
     - `400`: Bad request if the ID is not provided or is invalid.
     - `404`: Product not found if the ID does not match any product.
-    - `500`: Internal server error if there is a problem deleting the product.# techchallenge
+    - `500`: Internal server error if there is a problem deleting the product.
+      
+### Clients
+
+- **POST /clients**
+  - Adds a new client to the database.
+  - Body: `dto.CreateClientRequest`
+  - Responses:
+    - `201`: Client successfully created.
+    - `400`: Bad request if the client data is invalid.
+    - `500`: Internal server error if there is a problem on the server side.
+
+- **GET /clients/{cpf}**
+  - Retrieves details of a client by its CPF.
+  - Parameters:
+    - `cpf` (string): Client CPF.
+  - Responses:
+    - `200`: Successfully retrieved the client details.
+    - `400`: Bad request if the CPF is not provided or invalid.
+    - `404`: Client not found if the CPF does not match any client.
+    - `500`: Internal server error if there is a problem on the server side.
+
+### Orders
+
+- **GET /orders**
+  - Retrieves a paginated list of orders.
+  - Parameters:
+    - `page` (integer, default: 1): Page number for pagination.
+    - `pageSize` (integer, default: 10): Number of orders per page.
+  - Responses:
+    - `200`: Successfully retrieved list of orders.
+    - `500`: Internal server error if there is a problem on the server side.
+
+- **POST /orders**
+  - Adds a new order to the database.
+  - Body: `dto.CreateOrderRequest`
+  - Responses:
+    - `201`: Successfully created order.
+    - `400`: Bad request if the order data is invalid.
+    - `500`: Internal server error if there is a problem on the server side.
+
+- **GET /orders/{id}**
+  - Retrieves details of an order by its ID.
+  - Parameters:
+    - `id` (string): Order ID.
+  - Responses:
+    - `200`: Successfully retrieved the order details.
+    - `400`: Bad request if the ID is not provided or invalid.
+    - `404`: Order not found if the ID does not match any order.
+    - `500`: Internal server error if there is a problem on the server side.
+- **PATCH /orders/{id}/{status}**
+  - Update the status of an order 
+  - Parameters:
+    - `id` (string): Order ID.
+    - `status` (string): status.
+  - Responses:
+    - `200`: Successfully status updated.
+    - `400`: Bad request if the Status is not provided or invalid
+    - `500`: Internal server error if there is a problem on the server side.
       
 ### Payment
 
