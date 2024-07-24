@@ -20,7 +20,7 @@ The image for this project is also available on docker hub: https://hub.docker.c
     - [Clients](#clients)
     - [Orders](#orders)
     - [Products](#products)
-    - [peyment](#payment)
+    - [Payment](#payment)
   - [Kubernetes Structure Description](#kubernetes-structure-description)
     - [MongoDB](#mongodb)
     - [Skinaapis](#Skinaapis)
