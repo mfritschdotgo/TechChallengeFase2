@@ -24,7 +24,7 @@ The image for this project is also available on docker hub: https://hub.docker.c
     - [MongoDB](#mongodb)
     - [Skinaapis](#Skinaapis)
     - [Interconnections](#interconnections)    
-  -[Guide for Running the Application with Kubernetes](#guide-for-running-the-application-with-kubernetes)
+  - [Guide for Running the Application with Kubernetes](#guide-for-running-the-application-with-kubernetes)
     - [Prerequisites](#prerequisites)
     - [Example Directory Structure](#directory-structure)
     - [Step 1: Fast Running](#step-1-fast-running)
