@@ -371,12 +371,12 @@ If you need to delete all deployments, services, pods, HPAs, and PVCs, use the f
 1. Access the skinaapis service address with the port defined in the .env file or defined in skinaapis-service.yaml file:
    Compose: http://127.0.0.1:9090/docs/index.html#/
    Kubernets: http://127.0.0.1:31090/docs/index.html#/
-2. Get the category id that you will use when inserting a product, using the endpoint get method [Categories](#categories) 
+2. Get the category id that you will use when inserting a product, using the endpoint "get" method [Categories](#categories) 
 3. Add a product via the "post" method using the endpoint [Products](#products)
 4. Add a client via the "post" method using the endpoint [Clients](#clients).
-5. Get the ids of the products that you will insert in your order, using the endpoint's get method [Products](#products), it is possible via query param to search by category.
+5. Get the ids of the products that you will insert in your order, using the endpoint's "get" method [Products](#products), it is possible via query param to search by category.
 6. Add a request via the "post" method using the endpoint [Orders](#orders)
-7. Simulate a payment checkout through the endpoint using method get [Payment](#payment), this will return a QRCode for payment.
-8. Simulate payment approval via webhook using the post method [Payment](#payment), passing 0 for not approved and 1 for approved, this will update the order status.
+7. Simulate a payment checkout through the endpoint using method "get" [Payment](#payment), this will return a QRCode for payment.
+8. Simulate payment approval via webhook using the "post" method [Payment](#payment), passing 0 for not approved and 1 for approved, this will update the order status.
 
 Obs.: Through swagger for more details about the APIs
