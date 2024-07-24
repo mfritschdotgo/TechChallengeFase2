@@ -14,7 +14,6 @@ The image for this project is also available on docker hub: https://hub.docker.c
   - [Setup](#setup)
     - [Docker Setup](#docker-setup)
     - [Compose Setup](#compose-setup)
-  - [Integrated testing via Swagger](#integrated-testing-via-Swagger)
   - [API Endpoints](#api-endpoints)
     - [Categories](#categories)
     - [Products](#products)
@@ -31,6 +30,7 @@ The image for this project is also available on docker hub: https://hub.docker.c
     - [Step 1: Fast Running](#step-1-fast-running)
     - [Step 2: Verify Deployments and Services](#step-2-verify-deployments-and-services)
     - [Step 3: Clean Up Resources](#step-3-clean-up-resources)
+  - [Integrated testing via Swagger](#integrated-testing-via-Swagger)
 
 ## Setup
 
