@@ -14,23 +14,29 @@ The image for this project is also available on docker hub: https://hub.docker.c
   - [Setup](#setup)
     - [Docker Setup](#docker-setup)
     - [Compose Setup](#compose-setup)
-  - [Integrated testing via Swagger](#integrated-testing-via-Swagger)
   - [API Endpoints](#api-endpoints)
     - [Categories](#categories)
+    - [Products](#products)
     - [Clients](#clients)
     - [Orders](#orders)
-    - [Products](#products)
-    - [FakeCheckout](#fakeCheckout)
+    - [Payment](#payment)
   - [Kubernetes Structure Description](#kubernetes-structure-description)
     - [MongoDB](#mongodb)
     - [Skinaapis](#Skinaapis)
     - [Interconnections](#interconnections)    
-  -[Guide for Running the Application with Kubernetes](#guide-for-running-the-application-with-kubernetes)
+  - [Guide for Running the Application with Kubernetes](#guide-for-running-the-application-with-kubernetes)
     - [Prerequisites](#prerequisites)
     - [Example Directory Structure](#directory-structure)
     - [Step 1: Fast Running](#step-1-fast-running)
     - [Step 2: Verify Deployments and Services](#step-2-verify-deployments-and-services)
     - [Step 3: Clean Up Resources](#step-3-clean-up-resources)
+  - [Integrated testing via Swagger](#integrated-testing-via-Swagger)
+  - [Business Requirements](#business-requirements)
+    - [Client](#1-client-sequence-diagram)
+    - [Order](#2-order-sequence-diagram)
+    - [Payment](#3-payment-sequence-diagram)
+    - [Product](#4-product-sequence-diagram)
+  - [Clean Architecture Structure](#clean-architecture-structure)
 
 ## Setup
 
@@ -73,19 +79,6 @@ To set up the application using Docker compose, follow these steps:
 4. Start service from docker compose file, must be in the compose directory:
    ```sh
    docker compose up -d
-
-## Integrated testing via Swagger  
-
-1. Access the skinaapis service address with the port defined in the .env file:
-   http://127.0.0.1:9090/docs/index.html#/
-2. Add a client via the "post" method using the endpoint [Clients](#clients).
-3. Get the category id that you will use when inserting a product, using the endpoint get method [Categories](#categories) 
-4. Add a product via the "post" method using the endpoint [Products](#products)
-5. Get the ids of the products that you will insert in your order, using the endpoint's get method [Products](#products), it is possible via query param to search by category.
-6. Add a request via the "post" method using the endpoint [Orders](#orders)
-7. Simulate a fake checkout through the endpoint using method post [FakeCheckout](#fakeCheckout), this will change the order status to finished.
-
-Obs.: Through swagger for more details about the APIs
 
 ## API Endpoints
 
@@ -147,65 +140,6 @@ Obs.: Through swagger for more details about the APIs
     - `400`: Bad request if the ID is not provided or is invalid.
     - `404`: Category not found if the ID does not match any category.
     - `500`: Internal server error if there is a problem deleting the category.
-
-### Clients
-
-- **POST /clients**
-  - Adds a new client to the database.
-  - Body: `dto.CreateClientRequest`
-  - Responses:
-    - `201`: Client successfully created.
-    - `400`: Bad request if the client data is invalid.
-    - `500`: Internal server error if there is a problem on the server side.
-
-- **GET /clients/{cpf}**
-  - Retrieves details of a client by its CPF.
-  - Parameters:
-    - `cpf` (string): Client CPF.
-  - Responses:
-    - `200`: Successfully retrieved the client details.
-    - `400`: Bad request if the CPF is not provided or invalid.
-    - `404`: Client not found if the CPF does not match any client.
-    - `500`: Internal server error if there is a problem on the server side.
-
-### Orders
-
-- **GET /orders**
-  - Retrieves a paginated list of orders.
-  - Parameters:
-    - `page` (integer, default: 1): Page number for pagination.
-    - `pageSize` (integer, default: 10): Number of orders per page.
-  - Responses:
-    - `200`: Successfully retrieved list of orders.
-    - `500`: Internal server error if there is a problem on the server side.
-
-- **POST /orders**
-  - Adds a new order to the database.
-  - Body: `dto.CreateOrderRequest`
-  - Responses:
-    - `201`: Successfully created order.
-    - `400`: Bad request if the order data is invalid.
-    - `500`: Internal server error if there is a problem on the server side.
-
-- **GET /orders/{id}**
-  - Retrieves details of an order by its ID.
-  - Parameters:
-    - `id` (string): Order ID.
-  - Responses:
-    - `200`: Successfully retrieved the order details.
-    - `400`: Bad request if the ID is not provided or invalid.
-    - `404`: Order not found if the ID does not match any order.
-    - `500`: Internal server error if there is a problem on the server side.
-- **PATCH /orders/{id}/{status}**
-  - Update the status of an order 
-  - Parameters:
-    - `id` (string): Order ID.
-    - `status` (string): status.
-  - Responses:
-    - `200`: Successfully status updated.
-    - `400`: Bad request if the Status is not provided or invalid
-    - `500`: Internal server error if there is a problem on the server side.
-
 ### Products
 
 - **GET /products**
@@ -265,23 +199,112 @@ Obs.: Through swagger for more details about the APIs
     - `200`: Message indicating successful deletion.
     - `400`: Bad request if the ID is not provided or is invalid.
     - `404`: Product not found if the ID does not match any product.
-    - `500`: Internal server error if there is a problem deleting the product.# techchallenge
+    - `500`: Internal server error if there is a problem deleting the product.
       
-### fakeCheckout
+### Clients
 
-- **POST /fakeCheckout/{id}**
+- **POST /clients**
   - Adds a new client to the database.
-  - Parameters:
-    - `id` (string): Product ID.
   - Body: `dto.CreateClientRequest`
   - Responses:
-    - `200`: Successfully fake checkout.
+    - `201`: Client successfully created.
+    - `400`: Bad request if the client data is invalid.
+    - `500`: Internal server error if there is a problem on the server side.
+
+- **GET /clients/{cpf}**
+  - Retrieves details of a client by its CPF.
+  - Parameters:
+    - `cpf` (string): Client CPF.
+  - Responses:
+    - `200`: Successfully retrieved the client details.
+    - `400`: Bad request if the CPF is not provided or invalid.
+    - `404`: Client not found if the CPF does not match any client.
+    - `500`: Internal server error if there is a problem on the server side.
+
+### Orders
+
+- **GET /orders**
+  - Retrieves a paginated list of orders.
+  - Parameters:
+    - `page` (integer, default: 1): Page number for pagination.
+    - `pageSize` (integer, default: 10): Number of orders per page.
+  - Responses:
+    - `200`: Successfully retrieved list of orders.
+    - `500`: Internal server error if there is a problem on the server side.
+
+- **POST /orders**
+  - Adds a new order to the database.
+  - Body: `dto.CreateOrderRequest`
+  - Responses:
+    - `201`: Successfully created order.
+    - `400`: Bad request if the order data is invalid.
+    - `500`: Internal server error if there is a problem on the server side.
+
+- **GET /orders/{id}**
+  - Retrieves details of an order by its ID.
+  - Parameters:
+    - `id` (string): Order ID.
+  - Responses:
+    - `200`: Successfully retrieved the order details.
+    - `400`: Bad request if the ID is not provided or invalid.
+    - `404`: Order not found if the ID does not match any order.
+    - `500`: Internal server error if there is a problem on the server side.
+- **PATCH /orders/{id}/{status}**
+  - Update the status of an order 
+  - Parameters:
+    - `id` (string): Order ID.
+    - `status` (string): status.
+  - Responses:
+    - `200`: Successfully status updated.
+    - `400`: Bad request if the Status is not provided or invalid
+    - `500`: Internal server error if there is a problem on the server side.
+      
+### Payment
+
+- **GET /payment/{id}**
+  - Generates the qr code for payment via pix.
+  - Parameters:
+    - `id` (string): Order ID.
+  - Responses:
+    - `200`: Got qr code successfully.
     - `400`: Bad request if the ID is not provided or invalid.
     - `500`: Internal server error if there is a problem on the server side.
 
+- **POST /payment**
+  - Update payment status for the order based ID.
+  - Body: `dto.paymentDTO`
+  - Responses:
+    - `200`: Got qr code successfully.
+    - `400`: Bad request if the ID is not provided or invalid.
+    - `500`: Internal server error if there is a problem on the server side.
+
+
+## Business Requirements
+
+### 1. **Client Sequence Diagram**:
+
+   ![alt text](/resource/client_sequence_diagram.png)
+
+### 2. **Order Sequence Diagram**
+
+   ![alt text](/resource/order_sequence_diagram.png)
+
+### 3. **Payment Sequence Diagram**
+
+  ![alt text](/resource/payment_sequence_diagram.png)
+
+### 4. **Product Sequence Diagram**
+
+![alt text](/resource/product_sequence_diagram.png)
+
+
+## Clean Architecture Structure
+
+![alt text](resource/client_sequence_diagram.png)
+
 ## Kubernetes Structure Description
 
-![alt text](image.png)
+![alt text](/resource/kubernetes_structure_description.png)
 
 #### MongoDB
 
@@ -325,7 +348,7 @@ Obs.: Through swagger for more details about the APIs
 - **Pods and Services**: The `skinaapis` application pod connects to the `mongodb-service` to access the MongoDB database.
 - **Autoscaling**: The `HorizontalPodAutoscaler` adjusts the number of `skinaapis` pod replicas based on CPU and memory utilization.
 
-### Guide for Running the Application with Kubernetes
+## Guide for Running the Application with Kubernetes
 
 Follow these steps to set up and run your application in a Kubernetes cluster.
 
@@ -347,7 +370,6 @@ kubernetes/
   ├── skinaapis-deployment.yaml
   ├── skinaapis-service.yaml
   ├── skinaapis-hpa.yaml
-
 ```
 
 #### Step 1: Fast Running
@@ -373,3 +395,17 @@ If you need to delete all deployments, services, pods, HPAs, and PVCs, use the f
 ```sh
 `kubectl delete deployment --all kubectl delete svc --all kubectl delete pods --all kubectl delete hpa --all kubectl delete pvc --all`
 ```
+## Integrated testing via Swagger  
+
+1. Access the skinaapis service address with the port defined in the .env file or defined in skinaapis-service.yaml file:
+   Compose: http://127.0.0.1:9090/docs/index.html#/
+   Kubernets: http://127.0.0.1:31090/docs/index.html#/
+2. Get the category id that you will use when inserting a product, using the endpoint "get" method [Categories](#categories) 
+3. Add a product via the "post" method using the endpoint [Products](#products)
+4. Add a client via the "post" method using the endpoint [Clients](#clients).
+5. Get the ids of the products that you will insert in your order, using the endpoint's "get" method [Products](#products), it is possible via query param to search by category.
+6. Add a request via the "post" method using the endpoint [Orders](#orders)
+7. Simulate a payment checkout through the endpoint using method "get" [Payment](#payment), this will return a QRCode for payment.
+8. Simulate payment approval via webhook using the "post" method [Payment](#payment), passing 0 for not approved and 1 for approved, this will update the order status.
+
+Obs.: Through swagger for more details about the APIs
