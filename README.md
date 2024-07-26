@@ -300,7 +300,7 @@ To set up the application using Docker compose, follow these steps:
 
 ## Clean Architecture Structure
 
-![alt text](resource/client_sequence_diagram.png)
+![alt text](resource/clean_architecture.png)
 
 ## Kubernetes Structure Description
 
