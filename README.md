@@ -31,6 +31,12 @@ The image for this project is also available on docker hub: https://hub.docker.c
     - [Step 2: Verify Deployments and Services](#step-2-verify-deployments-and-services)
     - [Step 3: Clean Up Resources](#step-3-clean-up-resources)
   - [Integrated testing via Swagger](#integrated-testing-via-Swagger)
+  - [Business Requirements](#business-requirements)
+    - [Client](#1-client-sequence-diagram)
+    - [Order](#2-order-sequence-diagram)
+    - [Payment](#3-payment-sequence-diagram)
+    - [Product](#4-product-sequence-diagram)
+  - [Clean Architecture Structure](#clean-architecture-structure)
 
 ## Setup
 
@@ -272,9 +278,33 @@ To set up the application using Docker compose, follow these steps:
     - `400`: Bad request if the ID is not provided or invalid.
     - `500`: Internal server error if there is a problem on the server side.
 
+
+## Business Requirements
+
+### 1. **Client Sequence Diagram**:
+
+   ![alt text](/resource/client_sequence_diagram.png)
+
+### 2. **Order Sequence Diagram**
+
+   ![alt text](/resource/order_sequence_diagram.png)
+
+### 3. **Payment Sequence Diagram**
+
+  ![alt text](/resource/payment_sequence_diagram.png)
+
+### 4. **Product Sequence Diagram**
+
+![alt text](/resource/product_sequence_diagram.png)
+
+
+## Clean Architecture Structure
+
+![alt text](resource/clean_architecture.png)
+
 ## Kubernetes Structure Description
 
-![alt text](image.png)
+![alt text](/resource/kubernetes_structure_description.png)
 
 #### MongoDB
 
@@ -318,7 +348,7 @@ To set up the application using Docker compose, follow these steps:
 - **Pods and Services**: The `skinaapis` application pod connects to the `mongodb-service` to access the MongoDB database.
 - **Autoscaling**: The `HorizontalPodAutoscaler` adjusts the number of `skinaapis` pod replicas based on CPU and memory utilization.
 
-### Guide for Running the Application with Kubernetes
+## Guide for Running the Application with Kubernetes
 
 Follow these steps to set up and run your application in a Kubernetes cluster.
 
@@ -340,7 +370,6 @@ kubernetes/
   ├── skinaapis-deployment.yaml
   ├── skinaapis-service.yaml
   ├── skinaapis-hpa.yaml
-
 ```
 
 #### Step 1: Fast Running
