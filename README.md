@@ -37,6 +37,7 @@ The image for this project is also available on docker hub: https://hub.docker.c
     - [Product](#4-product-sequence-diagram)
   - [Clean Architecture Structure](#clean-architecture-structure)
   - [Integrated testing via Swagger](#integrated-testing-via-Swagger)
+
 ## Setup
 
 ### Docker Setup
