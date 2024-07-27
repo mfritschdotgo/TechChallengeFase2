@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/mfritschdotgo/techchallengefase2/internal/adapters/dto"
 	"github.com/mfritschdotgo/techchallengefase2/internal/domain/entities"
-	"github.com/mfritschdotgo/techchallengefase2/internal/domain/interfaces"
+	"github.com/mfritschdotgo/techchallengefase2/pkg/dto"
+	"github.com/mfritschdotgo/techchallengefase2/pkg/interfaces"
 )
 
 type Category struct {

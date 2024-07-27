@@ -30,13 +30,13 @@ The image for this project is also available on docker hub: https://hub.docker.c
     - [Step 1: Fast Running](#step-1-fast-running)
     - [Step 2: Verify Deployments and Services](#step-2-verify-deployments-and-services)
     - [Step 3: Clean Up Resources](#step-3-clean-up-resources)
-  - [Integrated testing via Swagger](#integrated-testing-via-Swagger)
   - [Business Requirements](#business-requirements)
     - [Client](#1-client-sequence-diagram)
     - [Order](#2-order-sequence-diagram)
     - [Payment](#3-payment-sequence-diagram)
     - [Product](#4-product-sequence-diagram)
   - [Clean Architecture Structure](#clean-architecture-structure)
+  - [Integrated testing via Swagger](#integrated-testing-via-Swagger)
 
 ## Setup
 

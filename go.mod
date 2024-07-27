@@ -8,7 +8,7 @@ require (
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/swaggo/http-swagger v1.3.4
 	github.com/swaggo/swag v1.16.3
-	go.mongodb.org/mongo-driver v1.16.0
+	go.mongodb.org/mongo-driver v1.16.0 
 )
 
 require (

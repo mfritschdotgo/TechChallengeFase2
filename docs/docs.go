@@ -15,84 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/clients": {
-            "post": {
-                "description": "Adds a new client to the database with the given details.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "clients"
-                ],
-                "summary": "Add a new client",
-                "parameters": [
-                    {
-                        "description": "Client creation details",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.CreateClientRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Client successfully created",
-                        "schema": {
-                            "$ref": "#/definitions/entities.Client"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request if the Client data is invalid"
-                    },
-                    "500": {
-                        "description": "Internal server error if there is a problem on the server side"
-                    }
-                }
-            }
-        },
-        "/clients/{cpf}": {
-            "get": {
-                "description": "Retrieves details of a client based on its unique CPF.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "clients"
-                ],
-                "summary": "Get a client",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "client CPF",
-                        "name": "cpf",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successfully retrieved the client details",
-                        "schema": {
-                            "$ref": "#/definitions/entities.Client"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request if the CPF is not provided or invalid"
-                    },
-                    "404": {
-                        "description": "Client not found if the CPF does not match any Client"
-                    }
-                }
-            }
-        },
         "/categories": {
             "get": {
                 "description": "Retrieves a paginated list of categories",
@@ -647,6 +569,84 @@ const docTemplate = `{
                 }
             }
         },
+        "/clients": {
+            "post": {
+                "description": "Adds a new client to the database with the given details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "clients"
+                ],
+                "summary": "Add a new client",
+                "parameters": [
+                    {
+                        "description": "Client creation details",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateClientRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Client successfully created",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Client"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request if the Client data is invalid"
+                    },
+                    "500": {
+                        "description": "Internal server error if there is a problem on the server side"
+                    }
+                }
+            }
+        },
+        "/clients/{cpf}": {
+            "get": {
+                "description": "Retrieves details of a client based on its unique CPF.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "clients"
+                ],
+                "summary": "Get a client",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "client CPF",
+                        "name": "cpf",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved the client details",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Client"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request if the CPF is not provided or invalid"
+                    },
+                    "404": {
+                        "description": "Client not found if the CPF does not match any Client"
+                    }
+                }
+            }
+        },
         "/orders": {
             "get": {
                 "description": "Retrieves a paginated list of orders",
@@ -813,6 +813,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/payment/{id}": {
+            "get": {
+                "description": "Generates the qr code for payment via pix",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payment"
+                ],
+                "summary": "Generates the qr code for payment via pix",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "order ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Got qr code successfully"
+                    },
+                    "400": {
+                        "description": "Bad request if the ID is not provided or invalid"
+                    },
+                    "500": {
+                        "description": "Internal server error if there is a problem on the server side"
+                    }
+                }
+            }
+        },
         "/payment": {
             "post": {
                 "description": "Update payment status for the order based ID.",
@@ -840,41 +875,6 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "Successfully update payment status for the order"
-                    },
-                    "400": {
-                        "description": "Bad request if the ID is not provided or invalid"
-                    },
-                    "500": {
-                        "description": "Internal server error if there is a problem on the server side"
-                    }
-                }
-            }
-        },
-        "/payment/{id}": {
-            "get": {
-                "description": "Generates the qr code for payment via pix",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "payment"
-                ],
-                "summary": "Generates the qr code for payment via pix",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "order ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Got qr code successfully"
                     },
                     "400": {
                         "description": "Bad request if the ID is not provided or invalid"
@@ -1105,12 +1105,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0",
+	Version:          "",
 	Host:             "",
-	BasePath:         "/",
+	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "Skina Lanches Management API",
-	Description:      "APIs for using the management system and sales orders",
+	Title:            "",
+	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
