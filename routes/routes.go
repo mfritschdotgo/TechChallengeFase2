@@ -6,7 +6,9 @@ import (
 	_ "github.com/mfritschdotgo/techchallengefase2/docs"
 	"github.com/mfritschdotgo/techchallengefase2/internal/adapters/controllers"
 	"github.com/mfritschdotgo/techchallengefase2/internal/adapters/gateways"
+	"github.com/mfritschdotgo/techchallengefase2/internal/adapters/handlers"
 	"github.com/mfritschdotgo/techchallengefase2/internal/adapters/presenters"
+	"github.com/mfritschdotgo/techchallengefase2/internal/adapters/repositories"
 	"github.com/mfritschdotgo/techchallengefase2/internal/domain/usecases"
 	"go.mongodb.org/mongo-driver/mongo"
 
@@ -25,10 +27,12 @@ func SetupRoutes(db *mongo.Database) *chi.Mux {
 	r.Use(middleware.Recoverer)
 
 	// Repositories and Use Cases
-	categoryRepo := gateways.NewCategoryRepository(db)
-	categoryUseCases := usecases.NewCategory(categoryRepo)
+	categoryRepo := repositories.NewMongoDBCategoryRepository(db)
+	categoryGateway := gateways.NewCategoryGateway(categoryRepo)
+	categoryUsecase := usecases.NewCategoryUseCase(categoryGateway)
+	categoryController := controllers.NewCategoryController(categoryUsecase)
 	categoryPresenter := presenters.NewCategoryPresenter()
-	categoryController := controllers.NewCategoryController(categoryUseCases, categoryPresenter)
+	categoryHandler := handlers.NewCategoryHandler(categoryController, categoryPresenter)
 
 	clientRepo := gateways.NewClientRepository(db)
 	clientUseCases := usecases.NewClient(clientRepo)
@@ -36,7 +40,7 @@ func SetupRoutes(db *mongo.Database) *chi.Mux {
 	clientController := controllers.NewClientController(clientUseCases, clientPresenter)
 
 	productRepo := gateways.NewProductRepository(db)
-	productUseCases := usecases.NewProduct(productRepo, categoryUseCases)
+	productUseCases := usecases.NewProduct(productRepo, categoryUsecase)
 	productPresenter := presenters.NewProductPresenter()
 	productController := controllers.NewProductController(productUseCases, productPresenter)
 
@@ -52,12 +56,12 @@ func SetupRoutes(db *mongo.Database) *chi.Mux {
 
 	// Configuração das rotas
 	r.Route("/categories", func(r chi.Router) {
-		r.Post("/", categoryController.CreateCategory)
-		r.Patch("/{id}", categoryController.UpdateCategory)
-		r.Put("/{id}", categoryController.ReplaceCategory)
-		r.Get("/{id}", categoryController.GetCategoryByID)
-		r.Get("/", categoryController.GetCategories)
-		r.Delete("/{id}", categoryController.DeleteCategory)
+		r.Post("/", categoryHandler.CreateCategory)
+		r.Patch("/{id}", categoryHandler.UpdateCategory)
+		r.Put("/{id}", categoryHandler.ReplaceCategory)
+		r.Get("/{id}", categoryHandler.GetCategoryByID)
+		r.Get("/", categoryHandler.GetCategories)
+		r.Delete("/{id}", categoryHandler.DeleteCategory)
 	})
 
 	r.Route("/products", func(r chi.Router) {

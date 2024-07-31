@@ -12,12 +12,12 @@ import (
 )
 
 type Category struct {
-	categoryRepo interfaces.CategoryRepository
+	gateway interfaces.CategoryGateway
 }
 
-func NewCategory(repo interfaces.CategoryRepository) *Category {
+func NewCategoryUseCase(gateway interfaces.CategoryGateway) *Category {
 	return &Category{
-		categoryRepo: repo,
+		gateway: gateway,
 	}
 }
 
@@ -27,7 +27,7 @@ func (s *Category) CreateCategory(ctx context.Context, dto dto.CreateCategoryReq
 		return nil, err
 	}
 
-	_, err = s.categoryRepo.CreateCategory(ctx, category)
+	_, err = s.gateway.CreateCategory(ctx, category)
 	if err != nil {
 		return nil, err
 	}
@@ -41,21 +41,20 @@ func (s *Category) ReplaceCategory(ctx context.Context, id string, category *ent
 		return nil, fmt.Errorf("invalid ID format: %w", err)
 	}
 
-	categoryDto, err := s.GetCategoryByID(ctx, uuidID.String())
-
+	existingCategory, err := s.GetCategoryByID(ctx, uuidID.String())
 	if err != nil {
 		return nil, err
 	}
 
-	categoryDto.Name = category.Name
-	categoryDto.Description = category.Description
-	categoryDto.UpdatedAt = time.Now()
+	existingCategory.Name = category.Name
+	existingCategory.Description = category.Description
+	existingCategory.UpdatedAt = time.Now()
 
-	if _, err = s.categoryRepo.ReplaceCategory(ctx, categoryDto); err != nil {
+	if _, err = s.gateway.ReplaceCategory(ctx, existingCategory); err != nil {
 		return nil, fmt.Errorf("failed to replace category: %w", err)
 	}
 
-	return categoryDto, nil
+	return existingCategory, nil
 }
 
 func (s *Category) UpdateCategory(ctx context.Context, id string, category *entities.Category) (*entities.Category, error) {
@@ -66,7 +65,7 @@ func (s *Category) UpdateCategory(ctx context.Context, id string, category *enti
 	category.ID = uuidID
 	category.UpdatedAt = time.Now()
 
-	if _, err = s.categoryRepo.UpdateCategory(ctx, category); err != nil {
+	if _, err = s.gateway.UpdateCategory(ctx, category); err != nil {
 		return nil, fmt.Errorf("failed to update category: %w", err)
 	}
 	response, err := s.GetCategoryByID(ctx, uuidID.String())
@@ -82,7 +81,7 @@ func (s *Category) GetCategoryByID(ctx context.Context, id string) (*entities.Ca
 		return nil, fmt.Errorf("invalid ID format: %w", err)
 	}
 
-	category, err := s.categoryRepo.GetCategoryByID(ctx, uuidID.String())
+	category, err := s.gateway.GetCategoryByID(ctx, uuidID.String())
 	if err != nil {
 		return nil, fmt.Errorf("category not found: %w", err)
 	}
@@ -98,7 +97,7 @@ func (s *Category) GetCategories(ctx context.Context, page, size int) ([]entitie
 		size = 10
 	}
 
-	categories, err := s.categoryRepo.GetCategories(ctx, page, size)
+	categories, err := s.gateway.GetCategories(ctx, page, size)
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +111,7 @@ func (s *Category) DeleteCategory(ctx context.Context, id string) error {
 		return fmt.Errorf("invalid ID format: %w", err)
 	}
 
-	if err = s.categoryRepo.DeleteCategory(ctx, uuidID.String()); err != nil {
+	if err = s.gateway.DeleteCategory(ctx, uuidID.String()); err != nil {
 		return fmt.Errorf("category not found or error deleting category: %w", err)
 	}
 
