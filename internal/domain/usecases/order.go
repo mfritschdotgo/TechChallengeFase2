@@ -12,12 +12,12 @@ import (
 )
 
 type Order struct {
-	orderRepo       interfaces.OrderRepository
-	clientUseCases  *Client
-	productUseCases *Product
+	orderRepo       interfaces.OrderGateway
+	clientUseCases  interfaces.ClientUseCase
+	productUseCases interfaces.ProductUseCase
 }
 
-func NewOrder(repo interfaces.OrderRepository, client *Client, product *Product) *Order {
+func NewOrder(repo interfaces.OrderGateway, client interfaces.ClientUseCase, product interfaces.ProductUseCase) interfaces.OrderUseCase {
 	return &Order{
 		orderRepo:       repo,
 		clientUseCases:  client,
@@ -53,7 +53,7 @@ func (s *Order) CreateOrder(ctx context.Context, dto dto.CreateOrderRequest) (*e
 	}
 
 	total = math.Round(total*100) / 100
-	items := ConvertDTOtoSlice(dto.Products, productDetails)
+	items := convertDTOtoSlice(dto.Products, productDetails)
 
 	order, err := entities.NewOrder(dto.Client, items, 0, total, "created")
 	if err != nil {
@@ -68,7 +68,7 @@ func (s *Order) CreateOrder(ctx context.Context, dto dto.CreateOrderRequest) (*e
 	return savedOrder, nil
 }
 
-func ConvertDTOtoSlice(dtoProducts []dto.ProductItem, productDetails map[string]struct {
+func convertDTOtoSlice(dtoProducts []dto.ProductItem, productDetails map[string]struct {
 	Price float64
 	Name  string
 }) []entities.OrderItem {
@@ -92,7 +92,6 @@ func (s *Order) GetOrderByID(ctx context.Context, id string) (*entities.Order, e
 	}
 
 	order, err := s.orderRepo.GetOrderByID(ctx, uuidID.String())
-
 	if err != nil {
 		return nil, fmt.Errorf("order not found: %w", err)
 	}
@@ -109,7 +108,6 @@ func (s *Order) GetOrders(ctx context.Context, page, size int) ([]entities.Order
 	}
 
 	orders, err := s.orderRepo.GetOrders(ctx, page, size)
-
 	if err != nil {
 		return nil, err
 	}
@@ -124,19 +122,16 @@ func (s *Order) SetOrderStatus(ctx context.Context, id string, status int) (*ent
 	}
 
 	_, err = s.orderRepo.GetOrderByID(ctx, uuidID.String())
-
 	if err != nil {
 		return nil, fmt.Errorf("order not found: %w", err)
 	}
 
 	orderStatus, err := entities.SetStatus(status)
-
 	if err != nil {
 		return nil, fmt.Errorf(err.Error())
 	}
 
 	err = s.orderRepo.SetStatus(ctx, uuidID, orderStatus.Status, orderStatus.StatusDescription)
-
 	if err != nil {
 		return nil, fmt.Errorf("failed to update order status: %w", err)
 	}

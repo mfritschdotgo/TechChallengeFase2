@@ -34,25 +34,33 @@ func SetupRoutes(db *mongo.Database) *chi.Mux {
 	categoryPresenter := presenters.NewCategoryPresenter()
 	categoryHandler := handlers.NewCategoryHandler(categoryController, categoryPresenter)
 
-	clientRepo := gateways.NewClientRepository(db)
-	clientUseCases := usecases.NewClient(clientRepo)
+	clientRepo := repositories.NewMongoDBClientRepository(db)
+	clientGateway := gateways.NewClientGateway(clientRepo)
+	clientUseCases := usecases.NewClient(clientGateway)
 	clientPresenter := presenters.NewClientPresenter()
-	clientController := controllers.NewClientController(clientUseCases, clientPresenter)
+	clientController := controllers.NewClientController(clientUseCases)
+	clientHandler := handlers.NewClientHandler(clientController, clientPresenter)
 
-	productRepo := gateways.NewProductRepository(db)
-	productUseCases := usecases.NewProduct(productRepo, categoryUsecase)
+	productRepo := repositories.NewMongoDBProductRepository(db)
+	productGateway := gateways.NewProductGateway(productRepo)
+	productUseCases := usecases.NewProduct(productGateway, categoryUsecase)
 	productPresenter := presenters.NewProductPresenter()
 	productController := controllers.NewProductController(productUseCases, productPresenter)
+	productHandler := handlers.NewProductHandler(productController, productPresenter)
 
-	orderRepo := gateways.NewOrderRepository(db)
-	orderUseCases := usecases.NewOrder(orderRepo, clientUseCases, productUseCases)
+	orderRepo := repositories.NewMongoDBOrderRepository(db)
+	orderGateway := gateways.NewOrderGateway(orderRepo)
+	orderUseCases := usecases.NewOrder(orderGateway, clientUseCases, productUseCases)
 	orderPresenter := presenters.NewOrderPresenter()
 	orderController := controllers.NewOrderController(orderUseCases, orderPresenter)
+	orderHandler := handlers.NewOrderHandler(orderController, orderPresenter)
 
-	paymentRepo := gateways.NewPaymentRepository(db)
-	paymentUseCases := usecases.NewPaymentStatusUsecase(paymentRepo, orderUseCases)
+	paymentRepo := repositories.NewMongoDBPaymentRepository(db)
+	paymentGateway := gateways.NewPaymentGateway(paymentRepo)
+	paymentUseCases := usecases.NewPaymentStatusUsecase(paymentGateway, orderUseCases)
 	paymentPresenter := presenters.NewPaymentPresenter()
 	paymentController := controllers.NewPaymentController(paymentUseCases, paymentPresenter)
+	paymentHandler := handlers.NewPaymentHandler(paymentController, paymentPresenter)
 
 	// Configuração das rotas
 	r.Route("/categories", func(r chi.Router) {
@@ -65,29 +73,29 @@ func SetupRoutes(db *mongo.Database) *chi.Mux {
 	})
 
 	r.Route("/products", func(r chi.Router) {
-		r.Post("/", productController.CreateProduct)
-		r.Put("/{id}", productController.ReplaceProduct)
-		r.Patch("/{id}", productController.UpdateProduct)
-		r.Get("/{id}", productController.GetProductByID)
-		r.Get("/", productController.GetProducts)
-		r.Delete("/{id}", productController.DeleteProduct)
+		r.Post("/", productHandler.CreateProduct)
+		r.Put("/{id}", productHandler.ReplaceProduct)
+		r.Patch("/{id}", productHandler.UpdateProduct)
+		r.Get("/{id}", productHandler.GetProductByID)
+		r.Get("/", productHandler.GetProducts)
+		r.Delete("/{id}", productHandler.DeleteProduct)
 	})
 
 	r.Route("/clients", func(r chi.Router) {
-		r.Post("/", clientController.CreateClient)
-		r.Get("/{cpf}", clientController.GetClientByCPF)
+		r.Post("/", clientHandler.CreateClient)
+		r.Get("/{cpf}", clientHandler.GetClientByCPF)
 	})
 
 	r.Route("/orders", func(r chi.Router) {
-		r.Get("/", orderController.GetOrders)
-		r.Get("/{id}", orderController.GetOrderByID)
-		r.Post("/", orderController.CreateOrder)
-		r.Patch("/{id}/{status}", orderController.SetOrderStatus)
+		r.Get("/", orderHandler.GetOrders)
+		r.Get("/{id}", orderHandler.GetOrderByID)
+		r.Post("/", orderHandler.CreateOrder)
+		r.Patch("/{id}/{status}", orderHandler.SetOrderStatus)
 	})
 
 	r.Route("/payment", func(r chi.Router) {
-		r.Post("/", paymentController.UpdatePaymentStatus)
-		r.Get("/{id}", paymentController.GeneratePayment)
+		r.Post("/", paymentHandler.UpdatePaymentStatus)
+		r.Get("/{id}", paymentHandler.GeneratePayment)
 	})
 
 	r.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL("/docs/doc.json")))

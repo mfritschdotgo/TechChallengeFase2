@@ -11,11 +11,11 @@ import (
 )
 
 type Payment struct {
-	paymentRepo   interfaces.PaymentStatusRepository
-	orderUseCases *Order
+	paymentRepo   interfaces.PaymentGateway
+	orderUseCases interfaces.OrderUseCase
 }
 
-func NewPaymentStatusUsecase(repo interfaces.PaymentStatusRepository, order *Order) *Payment {
+func NewPaymentStatusUsecase(repo interfaces.PaymentGateway, order interfaces.OrderUseCase) interfaces.PaymentUseCase {
 	return &Payment{
 		paymentRepo:   repo,
 		orderUseCases: order,
@@ -33,7 +33,6 @@ func (s *Payment) SetPaymentStatus(ctx context.Context, id string, status int) (
 	}
 
 	order, err := s.orderUseCases.GetOrderByID(ctx, uuidID.String())
-
 	if err != nil {
 		return nil, fmt.Errorf("order not found: %w", err)
 	}
@@ -43,13 +42,11 @@ func (s *Payment) SetPaymentStatus(ctx context.Context, id string, status int) (
 	}
 
 	orderStatus, err := entities.SetStatus(status)
-
 	if err != nil {
 		return nil, fmt.Errorf(err.Error())
 	}
 
 	err = s.paymentRepo.UpdatePayment(ctx, uuidID, orderStatus.Status, orderStatus.StatusDescription)
-
 	if err != nil {
 		return nil, fmt.Errorf("failed to update order status: %w", err)
 	}
@@ -58,14 +55,12 @@ func (s *Payment) SetPaymentStatus(ctx context.Context, id string, status int) (
 }
 
 func (s *Payment) GenerateQRCode(ctx context.Context, id string) ([]byte, error) {
-
 	uuidID, err := uuid.Parse(id)
 	if err != nil {
 		return nil, fmt.Errorf("invalid ID format: %w", err)
 	}
 
 	order, err := s.orderUseCases.GetOrderByID(ctx, uuidID.String())
-
 	if err != nil {
 		return nil, fmt.Errorf("order not found: %w", err)
 	}
@@ -75,7 +70,6 @@ func (s *Payment) GenerateQRCode(ctx context.Context, id string) ([]byte, error)
 	}
 
 	png, err := qrcode.Encode(id, qrcode.Medium, 256)
-
 	if err != nil {
 		return nil, err
 	}

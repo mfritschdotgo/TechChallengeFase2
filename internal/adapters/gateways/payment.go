@@ -4,26 +4,19 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
+	"github.com/mfritschdotgo/techchallengefase2/pkg/interfaces"
 )
 
-type PaymentRepository struct {
-	Collection *mongo.Collection
+type PaymentGateway struct {
+	repo interfaces.PaymentRepository
 }
 
-func NewPaymentRepository(db *mongo.Database) *PaymentRepository {
-	return &PaymentRepository{
-		Collection: db.Collection("orders"),
+func NewPaymentGateway(repo interfaces.PaymentRepository) interfaces.PaymentGateway {
+	return &PaymentGateway{
+		repo: repo,
 	}
 }
 
-func (pr *PaymentRepository) UpdatePayment(ctx context.Context, id uuid.UUID, status int, description string) error {
-	filter := bson.M{"_id": id}
-	update := bson.M{"$set": bson.M{"status": status, "status_description": description}}
-	_, err := pr.Collection.UpdateOne(ctx, filter, update)
-	if err != nil {
-		return err
-	}
-	return nil
+func (g *PaymentGateway) UpdatePayment(ctx context.Context, id uuid.UUID, status int, description string) error {
+	return g.repo.UpdatePayment(ctx, id, status, description)
 }

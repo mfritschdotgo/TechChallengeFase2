@@ -12,12 +12,12 @@ import (
 )
 
 type Client struct {
-	clientRepo interfaces.ClientRepository
+	gateway interfaces.ClientGateway
 }
 
-func NewClient(repo interfaces.ClientRepository) *Client {
+func NewClient(gateway interfaces.ClientGateway) interfaces.ClientUseCase {
 	return &Client{
-		clientRepo: repo,
+		gateway: gateway,
 	}
 }
 
@@ -35,7 +35,7 @@ func (s *Client) CreateClient(ctx context.Context, dto dto.CreateClientRequest) 
 		return nil, err
 	}
 
-	_, err = s.clientRepo.CreateClient(ctx, client)
+	_, err = s.gateway.CreateClient(ctx, client)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (s *Client) CreateClient(ctx context.Context, dto dto.CreateClientRequest) 
 }
 
 func (s *Client) GetClientByCPF(ctx context.Context, cpf string) (*entities.Client, error) {
-	client, err := s.clientRepo.GetClientByCPF(ctx, cpf)
+	client, err := s.gateway.GetClientByCPF(ctx, cpf)
 	if err != nil {
 		return nil, fmt.Errorf("client not found: %w", err)
 	}

@@ -12,11 +12,11 @@ import (
 )
 
 type Product struct {
-	productRepo     interfaces.ProductRepository
-	categoryService *Category
+	productRepo     interfaces.ProductGateway
+	categoryService interfaces.CategoryUseCase
 }
 
-func NewProduct(repo interfaces.ProductRepository, categoryService *Category) *Product {
+func NewProduct(repo interfaces.ProductGateway, categoryService interfaces.CategoryUseCase) interfaces.ProductUseCase {
 	return &Product{
 		productRepo:     repo,
 		categoryService: categoryService,
@@ -24,7 +24,6 @@ func NewProduct(repo interfaces.ProductRepository, categoryService *Category) *P
 }
 
 func (s *Product) CreateProduct(ctx context.Context, dto dto.CreateProductRequest) (*entities.Product, error) {
-
 	if _, err := s.categoryService.GetCategoryByID(ctx, dto.CategoryId.String()); err != nil {
 		return nil, fmt.Errorf("category validation failed: %w", err)
 	}
