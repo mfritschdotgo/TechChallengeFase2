@@ -403,4 +403,4 @@ If you need to delete all deployments, services, pods, HPAs, and PVCs, use the f
 7. Simulate a payment checkout through the endpoint using method "get" [Payment](#payment), this will return a QRCode for payment.
 8. Simulate payment approval via webhook using the "post" method [Payment](#payment), passing 0 for not approved and 1 for approved, this will update the order status.
 
-Obs.: Through swagger for more details about the APIs
+Obs.: Through swagger for more details about the APIs and you can watch a video with details about the order of use of the APIs and how to use them: https://youtu.be/Ep46X8zXRoc?si=DqRkNH-56K5duyD4&t=872
